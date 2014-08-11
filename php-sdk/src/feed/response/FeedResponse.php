@@ -16,9 +16,9 @@ class FeedResponse {
 	
 	public function __construct(array $response/*Map<String, Object>*/){
 		$this->_statusCode = $response["statusCode"];
-		$this->$_message = $response["message"];
-		$this->$_uploadID = $response["unbxdFileName"];
-		$this->$_unknownSchemaFields = $response["unknownSchemaFields"];
+		$this->_message = $response["message"];
+		$this->_uploadID = $response["unbxdFileName"];
+		$this->_unknownSchemaFields = $response["unknownSchemaFields"];
 		if(array_key_exists("fieldErrors", $response)){
 			$fieldErrors = $response["fieldErrors"];
 			$this->_fieldErrors = array();//array of FeedFieldError

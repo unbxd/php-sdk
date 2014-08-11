@@ -61,7 +61,7 @@ class FeedFile {
 		   		$this->writeTree($taxonomyNodes, $this->_doc["feed"]["taxonomy"]);
 		   	}
 		   	if(count($taxonomyMapping)>0){
-		   		$this->writeMapping($taxonomyMappings, $this->_doc["feed"]["taxonomy"]);
+		   		$this->writeMapping($taxonomyMapping, $this->_doc["feed"]["taxonomy"]);
 		   	}
 		   }
 	}

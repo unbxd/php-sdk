@@ -102,7 +102,7 @@ class FeedClient {
      */
 	
 	public function addVariant($parentUniqueId,/*String*/
-							   $variantAttributes/*Map<String, Object>*/){
+							   array $variantAttributes/*Map<String, Object>*/){
 			
 			if(!array_key_exists($parentUniqueId, $this->_addedDocs)){
 				throw new FeedInputException("Parent product needs to be added");
@@ -264,15 +264,16 @@ class FeedClient {
 	
 	public function push($isFullImport){
 		$fileArchive = $this->siteKey.".zip";
-		$doc = new FeedFile($this->_fields, array_values($this->_addedDocs), array_values($this->_updatedDocs), $this->_deletedDocs, $this->_taxonomyNodes, $this->_taxonomyMappings).getDoc();
+		$client = new FeedFile($this->_fields, array_values($this->_addedDocs), array_values($this->_updatedDocs), $this->_deletedDocs, $this->_taxonomyNodes, $this->_taxonomyMappings);
+		$doc = $client->getDoc();
 		try{
 			$file = $this->siteKey.".json";
 			file_put_contents($file,json_encode($doc));
-			$errors = $this->zipIt($fileArchive, $file);
+			/*$errors = $this->zipIt($fileArchive, $file);
 			if($errors !== TRUE){
 				throw new FeedUploadException($errors);
-			}
-			echo "Stored at: ".$fileArchive;
+			}*/
+			//echo "Stored at: ".$fileArchive;
 			$url = $this->getFeedUrl();
 			if($isFullImport){
 				$url .= "?fullimport=true";
@@ -284,7 +285,7 @@ class FeedClient {
 			$request,
 			CURLOPT_POSTFIELDS,
 			array(
-      'file' => '@' . realpath($fileArchive)
+      'file' => '@' . realpath($file)
 			));
 			curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
 			$response = curl_exec($request);
