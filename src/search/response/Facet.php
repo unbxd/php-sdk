@@ -12,10 +12,23 @@ class Facet {
 	protected $name;//String
 	protected $_type;//String
 	protected $_facetEntries;//array(FacetEntry)
-	
+	protected $_display_name;//string
+	protected $_position;//int
+
+
 	public function __construct($facetName/*String*/, array $params/*array(String => Object)*/ ){
 		$this->name = $facetName;
 		$this->_type = (string)$params["type"];
+		$this->_position = NULL;
+		$this->_display_name= NULL;
+
+		if (isset($params["position"])){
+				$this->_position = $params["position"];
+			}
+
+		if (isset($params["displayName"])){
+				$this->_display_name = $params["displayName"];
+			}
 		
 		if(is_array($params["values"])){
 			$map = (array) $params["values"];
@@ -24,13 +37,22 @@ class Facet {
 			}else{
 				$this->generateEntries($map);
 			}
-		}	
+		}
+
 	}
 	
 	public function getName(){
 		return $this->name;
 	}
 	
+	public function getPosition(){
+		return $this->_position;
+	}
+
+	public function getdisplay_name(){
+		return $this->_display_name;
+	}
+
 	public function getType(){
 		return $this->_type;
 	}
