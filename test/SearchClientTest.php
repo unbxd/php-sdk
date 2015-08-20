@@ -14,17 +14,18 @@ include_once (dirname(__FILE__).'/../src/search/response/SearchResponse.php');
 class SearchClientTest extends PHPUnit_Framework_TestCase{
 	
 	protected function setUp(){
-		Unbxd::configure("demo-u1393483043451", "ae30782589df23780a9d98502388555f", "ae30782589df23780a9d98502388555f");
+		Unbxd::configure("demosite-u1407617955968", "64a4a2592a648ac8415e13c561e44991", "64a4a2592a648ac8415e13c561e44991");
 	}
 	
 	public function test_search(){
+		
 		$queryParams = array();
 		$queryParams["fl"]="uniqueId";
 		$queryParams["stats"] = "price";
 		$client = Unbxd::getSearchClient();
 		$response = $client->search("*",$queryParams)
-					->addFilter("color_fq",array("black"))
-					->addFilter("brand_fq",array("Ralph Lauren"))
+					->addTextFilter("color_fq",array("black"))
+					->addTextFilter("brand_fq",array("Ralph Lauren"))
 					->addSort("price",new SortDir(SortDir::ASC))
 					->setPage(2,5)
 					->execute();
@@ -47,8 +48,8 @@ class SearchClientTest extends PHPUnit_Framework_TestCase{
 		$queryParams["stats"] = "price";
 		$response = Unbxd::getSearchClient()
 					->browse("1",$queryParams)
-					->addFilter("color_fq",array("black"))
-					->addFilter("brand_fq",array("Ralph Lauren"))
+					->addTextFilter("color_fq",array("black"))
+					->addTextFilter("brand_fq",array("Ralph Lauren"))
 					->addSort("price",new SortDir(SortDir::ASC))
 					->setPage(2,5)
 					->execute();
@@ -72,8 +73,8 @@ class SearchClientTest extends PHPUnit_Framework_TestCase{
 		$queryParams["stats"] = "price";
 		$response = Unbxd::getSearchClient()
 					->bucket("*", "category", $queryParams)
-					->addFilter("color_fq",array("black"))
-					->addFilter("brand_fq",array("Ralph Lauren"))
+					->addTextFilter("color_fq",array("black"))
+					->addTextFilter("brand_fq",array("Ralph Lauren"))
 					->addSort("price",new SortDir(SortDir::ASC))
 					->setPage(2,5)
 					->execute();

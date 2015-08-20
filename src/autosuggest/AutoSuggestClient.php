@@ -35,7 +35,7 @@ class AutoSuggestClient{
 	}
 	
 	private function getAutoSuggestUrl(){
-		return (($this->secure)?"https://":"http://")."$this->siteKey.search.unbxdapi.com/$this->apiKey/autosuggest?wt=json";
+		return (($this->secure)?"https://":"http://")."search.unbxdapi.com/".$this->apiKey."/".$this->siteKey."/autosuggest?wt=json";
 	}
 	
 	/**
