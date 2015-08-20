@@ -27,7 +27,7 @@ class SearchClient {
 	private $sorts;//array(String=>SortDir
 	private $pageNo;//int
 	private $pageSize;//int
-	private $otherparams;
+	private $OtherParams;
 
 	
 	public function __construct($siteKey, $apiKey, $secure/*bool*/){
@@ -37,21 +37,18 @@ class SearchClient {
 		$this->rangefilters = array();//array(String=>array(string))
 		$this->filters = array();//array(String=>array(string))
 		$this->sorts = array();//array(String=>SortDir)
-		$this->otherparams = array();
+		$this->OtherParams = array();
 		$this->pageNo = 0;
 		$this->pageSize = 10;
 		
 	}
 	
 	private function getSearchUrl(){
-
 		return (($this->secure)?"https://":"http://")."search.unbxdapi.com/".$this->apiKey."/".$this->siteKey."/search?wt=json";
 	}
 	
 	private function getBrowseUrl(){
 		return (($this->secure)?"https://":"http://")."search.unbxdapi.com/".$this->apiKey."/".$this->siteKey."/browse?wt=json";
-
-
 	}
 	
 	/**
@@ -81,7 +78,6 @@ class SearchClient {
 		$this->query =  $query;
 		$this->queryParams = $queryParams;
 		$this->bucketField = $bucketField;
-		
 		return $this;
 	}
 	
@@ -112,23 +108,21 @@ class SearchClient {
      */
 	
 	public function addTextFilter($fieldName, array $values/*array(String)*/){
-		foreach ($values as $key => $value) {
-			$this->filters[$fieldName][]=$values[$key];
+		foreach ($values as $field => $value) {
+			$this->filters[$fieldName][]=$values[$field];
 		}
-
 		return $this;
 	}
 	
-	public function addRangeFilter($fieldName, array $values/*array(String)*/){
-		
-		foreach ($values as $key => $value) {
-			$this->rangefilters[$fieldName][]=$values[$key];
+	public function addRangeFilter($fieldName, array $values/*array(String)*/){		
+		foreach ($values as $field => $value){
+			$this->rangefilters[$fieldName][]=$values[$field];
 		}
 		return $this;
 	}
 
-	public function addOtherparams($key , $value){
-		$this->otherparams[$key] = $value;
+	public function addOtherParams($Otherkey , $Othervalue){
+		$this->OtherParams[$Otherkey] = $Othervalue;
 		return $this;
 	}
 	
@@ -175,7 +169,8 @@ class SearchClient {
 				if(isset($this->bucketField)){
 					$sb .= "&bucket.field=".urlencode(utf8_encode($this->bucketField));
 				}
-			}elseif (isset($this->categoryIds) && count($this->categoryIds)>0){
+			}
+			elseif (isset($this->categoryIds) && count($this->categoryIds)>0){
 				$sb .= $this->getBrowseUrl();
 				$sb .= "&category-id=".urlencode(utf8_encode(implode(",", $this->categoryIds)));
 			}
@@ -205,32 +200,28 @@ class SearchClient {
 					}
 					else{
 					
-					foreach($val as $value){
-						$sb .= "&filter=".urlencode(utf8_encode($key.':"'.$value.'"'));
+						foreach($val as $value){
+							$sb .= "&filter=".urlencode(utf8_encode($key.':"'.$value.'"'));
 						
-					}
-				  }
+						}
+				  	}
 				}
 			}
 			
 			if(isset($this->rangefilters) && count($this->rangefilters)>0){
-					foreach ($this->rangefilters as $key => $value) {
-						$cnt = count($value)-1;
-						$sb .= "&filter=".$key;
-						for( $val=0 ; $val < count($value); $val+=1){
-							$sb.=":[".$value[$val].'+TO+'.$value[++$val].']';
-
-						if($val < $cnt)
-						{
+				foreach ($this->rangefilters as $key => $value) {
+					$cnt = count($value)-1;
+					$sb .= "&filter=".$key;
+					for( $val=0 ; $val < count($value); $val+=1){
+						$sb.=":[".$value[$val].'+TO+'.$value[++$val].']';
+						if($val < $cnt){
 							$sb.= urlencode(utf8_decode(" OR ".$key));
 						}
-
-						}
-						}
+					}
+				}
 				
-			}
+		    }
 
-			
 			if(isset($this->sorts) && count($this->sorts)>0){
 				$sorts = array();
 				foreach($this->sorts as $key=>$val){
@@ -242,15 +233,16 @@ class SearchClient {
 
 			$sb .= "&pageNumber=$this->pageNo";
 			$sb .= "&rows=$this->pageSize";
+
+
 			if(isset($this->otherparams) && count($this->otherparams)>0){
 				foreach ($this->otherparams as $key=>$val){
-					foreach($val as $value){
-						$sb .= "&".urlencode(utf8_encode($key.'='.$value));
-					}
-			}
+					$sb .= "&".urlencode(utf8_encode($key.'='.$val));
+				}
+		  	}
 			return (string)$sb;
-			
-		}catch (Exception $e){
+		}
+		catch (Exception $e){
 			throw new SearchException($e);
 			
 		}
@@ -268,6 +260,7 @@ class SearchClient {
 		try{
 			$errors=NULL;
 			$url = $this->generateUrl();
+			print_r($url);
 			$request = curl_init($url);
 
 			curl_setopt($request, CURLOPT_RETURNTRANSFER, TRUE);
@@ -286,15 +279,12 @@ class SearchClient {
 
 			return new SearchResponse(json_decode($response,TRUE));
 			
-		}catch(Exception $e){
-			throw new SearchException($e->getMessage());
-			
+		}
+		catch(Exception $e){
+			throw new SearchException($e->getMessage());			
 		}
 	}
-		
-	
-	
-	
+			
 }
 
 abstract class enum1 {

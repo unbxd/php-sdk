@@ -12,7 +12,7 @@ class Facet {
 	protected $name;//String
 	protected $_type;//String
 	protected $_facetEntries;//array(FacetEntry)
-	protected $_display_name;//string
+	protected $_displayname;//string
 	protected $_position;//int
 
 
@@ -20,14 +20,14 @@ class Facet {
 		$this->name = $facetName;
 		$this->_type = (string)$params["type"];
 		$this->_position = NULL;
-		$this->_display_name= NULL;
+		$this->_displayname= NULL;
 
 		if (isset($params["position"])){
 				$this->_position = $params["position"];
 			}
 
 		if (isset($params["displayName"])){
-				$this->_display_name = $params["displayName"];
+				$this->_displayname = $params["displayName"];
 			}
 		
 		if(is_array($params["values"])){
@@ -49,8 +49,8 @@ class Facet {
 		return $this->_position;
 	}
 
-	public function getdisplay_name(){
-		return $this->_display_name;
+	public function getDisplayname(){
+		return $this->_displayname;
 	}
 
 	public function getType(){

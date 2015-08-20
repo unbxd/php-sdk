@@ -260,8 +260,7 @@ class RecommendationsClient {
 		}catch (Exception $e){
 			throw new RecommendationsException($e->getMessage());
 		}
-	}
-	
+	}	
 	
 }
 

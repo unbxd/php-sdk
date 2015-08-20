@@ -145,7 +145,8 @@ class AutoSuggestClient{
 				throw  new AutoSuggestException($response);
 			}
 			return new AutoSuggestResponse(json_decode($response,TRUE));
-		}catch (Exception $e){
+		}
+		catch (Exception $e){
 			throw new AutoSuggestException($e->getMessage());
 		}
 	}

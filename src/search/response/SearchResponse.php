@@ -156,14 +156,6 @@ class SearchResponse {
 		return $this->_facets->getFacets();
 	}
 
-	public function getFacetposition($i){
-		return $this->_facets->getFacets()[$i]->getPosition();
-	}
-
-	public function getFacet_display_name($i){
-		return $this->_facets->getFacets()[$i]->getdisplay_name();
-	}
-
 	public function getAppliedcategory(){
 		return $this->_banner->getAppliedcategory();
 	}

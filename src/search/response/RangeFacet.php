@@ -12,7 +12,8 @@ include_once(dirname(__FILE__).'/RangeFacetEntry.php');
 class RangeFacet extends Facet{
 	private $_gap;//double
 	protected $_rangeFacetEntries;//array(RangeFacetEntry)
-	
+
+
 	public function __construct($facetName, $params){
 		parent::__construct($facetName, $params);
 		$this->_gap = (double)$params["values"]["gap"];
