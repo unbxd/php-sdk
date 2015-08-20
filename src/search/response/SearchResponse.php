@@ -8,6 +8,7 @@
 include_once (dirname(__FILE__).'/SearchResults.php');
 include_once (dirname(__FILE__).'/BucketResults.php');
 include_once (dirname(__FILE__).'/Facets.php');
+include_once (dirname(__FILE__).'/Banners.php');
 include_once (dirname(__FILE__).'/Stats.php');
 
 class SearchResponse {
@@ -22,9 +23,9 @@ class SearchResponse {
 	private $_facets;//Facets
 	private $_stats;//Stats
 	private $_spellCorrections;//array(String)
+	private $_banner;//banners
 	
 	public function __construct(array $params/*array(String=>Object)*/){
-		//var_dump($params);
 		if(array_key_exists("error", $params) && isset($params["error"])){
 			$error = $params["error"];
 			$this->_errorCode = (int) $error["code"];
@@ -51,6 +52,11 @@ class SearchResponse {
 				$facets = $params["facets"];
 				$this->_facets = new Facets($facets);
 			}
+
+			if(array_key_exists("banner", $params) && isset($params["banner"])){
+				$banner = $params["banner"];
+				$this->_banner = new Banners($banner);
+			}
 			
 			if(array_key_exists("stats", $params) && isset($params["stats"])){
 				$stats = $params["stats"];
@@ -66,7 +72,7 @@ class SearchResponse {
 				}
 			}
 			
-		}//
+		}
 	}
 	
 	
@@ -141,4 +147,20 @@ class SearchResponse {
 	public function getBuckets(){
 		return $this->_buckets;
 	}
+
+	public function getBanners(){
+		return $this->_banner->getBanner();
+	}
+
+	public function getFacets(){
+		return $this->_facets->getFacets();
+	}
+
+	public function getAppliedcategory(){
+		return $this->_banner->getAppliedcategory();
+	}
+
 }
+
+
+

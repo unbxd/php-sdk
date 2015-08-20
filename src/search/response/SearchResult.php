@@ -11,7 +11,9 @@ class SearchResult {
 	
 	public function __construct(array $product/*array(String => Object)*/){
 		$this->_attributes = $product;
-		$this->_uniqueId = (string) $this->_attributes["uniqueId"];		
+		if (isset($product['uniqueId'])) {
+		$this->_uniqueId = (string) $this->_attributes["uniqueId"];	
+	}
 	}
 	
 	/**

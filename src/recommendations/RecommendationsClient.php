@@ -26,9 +26,9 @@ class RecommendationsClient {
 		$this->secure = $secure;
 		
 	}
-	
+
 	private function getRecommendationUrl(){
-		return (($this->secure)?"https://":"http://")."apac-recommendations.unbxdapi.com/v1.0/$this->apiKey/$this->siteKey/";
+		return (($this->secure)?"https://":"http://")."recommendations.unbxdapi.com/v1.0/".$this->apiKey."/".$this->siteKey."/";
 	}
 	
 	
@@ -38,9 +38,10 @@ class RecommendationsClient {
      * @return this
      */
 	
-	public function getRecentlyViewed($uid/*String*/){
+	public function getRecentlyViewed($uid/*String*/ , $ip/*String*/){
 		$this->_boxType = new RecommenderBoxType(RecommenderBoxType::RECENTLY_VIEWED);
 		$this->uid = $uid;
+		$this->ip  = $ip;
 		return $this;
 	}
 	
@@ -66,10 +67,11 @@ class RecommendationsClient {
      * @return this
      */
 	
-	public function getMoreLikeThis($uniqueId/*String*/, $uid/*String*/){
+	public function getMoreLikeThis($uniqueId/*String*/, $uid/*String*/,$ip/*String*/){
 		$this->_boxType = new RecommenderBoxType(RecommenderBoxType::MORE_LIKE_THESE);
 		$this->uid = $uid;
 		$this->uniqueId = $uniqueId;
+		$this->ip  = $ip;
 		return $this;
 	}
 	
@@ -81,10 +83,11 @@ class RecommendationsClient {
      * @return this
      */
 	
-	public function getAlsoViewed($uniqueId/*String*/, $uid/*String*/){
+	public function getAlsoViewed($uniqueId/*String*/, $uid/*String*/,$ip/*String*/){
 		$this->_boxType = new RecommenderBoxType(RecommenderBoxType::ALSO_VIEWED);
 		$this->uid = $uid;
 		$this->uniqueId = $uniqueId;
+		$this->ip  = $ip;
 		return $this;
 	}
 	
@@ -96,10 +99,11 @@ class RecommendationsClient {
      * @return this
      */
 	
-	public function getAlsoBought($uniqueId/*String*/, $uid/*String*/){
+	public function getAlsoBought($uniqueId/*String*/, $uid/*String*/,$ip/*String*/){
 		$this->_boxType = new RecommenderBoxType(RecommenderBoxType::ALSO_BOUGHT);
 		$this->uid = $uid;
 		$this->uniqueId = $uniqueId;
+		$this->ip  = $ip;
 		return $this;
 	}
 	
@@ -251,14 +255,12 @@ class RecommendationsClient {
 			if($info['http_code']!=200){
 				throw  new RecommendationsException($response);
 			}
-			
 			return new RecommendationResponse(json_decode($response,TRUE));
 			
 		}catch (Exception $e){
 			throw new RecommendationsException($e->getMessage());
 		}
-	}
-	
+	}	
 	
 }
 
