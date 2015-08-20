@@ -23,28 +23,35 @@ class SearchClient {
 	private $bucketField;//String
 	private $categoryIds;//array(string)
 	private $filters;//array(String=>array(String))
+	private $rangefilters;//array(String=>array(String))
 	private $sorts;//array(String=>SortDir
 	private $pageNo;//int
 	private $pageSize;//int
+	private $otherparams;
+
 	
 	public function __construct($siteKey, $apiKey, $secure/*bool*/){
 		$this->siteKey = $siteKey;
 		$this->apiKey = $apiKey;
 		$this->secure = $secure;
-		
+		$this->rangefilters = array();//array(String=>array(string))
 		$this->filters = array();//array(String=>array(string))
 		$this->sorts = array();//array(String=>SortDir)
-		$this->pageNo = 1;
+		$this->otherparams = array();
+		$this->pageNo = 0;
 		$this->pageSize = 10;
 		
 	}
 	
 	private function getSearchUrl(){
-		return (($this->secure)?"https://":"http://").$this->siteKey.".search.unbxdapi.com/".$this->apiKey."/search?wt=json";
+
+		return (($this->secure)?"https://":"http://")."search.unbxdapi.com/".$this->apiKey."/".$this->siteKey."/search?wt=json";
 	}
 	
 	private function getBrowseUrl(){
-		return (($this->secure)?"https://":"http://").$this->siteKey.".search.unbxdapi.com/".$this->apiKey."/browse?wt=json";
+		return (($this->secure)?"https://":"http://")."search.unbxdapi.com/".$this->apiKey."/".$this->siteKey."/browse?wt=json";
+
+
 	}
 	
 	/**
@@ -54,9 +61,11 @@ class SearchClient {
      * @return this
      */
 	
-	public function search($query/*String*/, array $queryParams/*array(String=>String)*/){
+	public function search($query/*String*/, array $queryParams=NULL){
+
 		$this->query = $query;
 		$this->queryParams = $queryParams;
+		
 		return $this;
 	}
 	
@@ -68,7 +77,7 @@ class SearchClient {
      * @return this
      */
 	
-	public function bucket($query/*String*/, $bucketField/*String*/, array $queryParams/*array(String=>String)*/){
+	public function bucket($query/*String*/, $bucketField/*String*/, array $queryParams=NULL){
 		$this->query =  $query;
 		$this->queryParams = $queryParams;
 		$this->bucketField = $bucketField;
@@ -83,7 +92,7 @@ class SearchClient {
      * @return this
      */
 	
-	public function browse($nodeId, array $queryParams/*array(String=>String)*/){
+	public function browse($nodeId, array $queryParams=NULL){
 		if(is_array($nodeId)){
 			$this->categoryIds = $nodeId;
 		}
@@ -102,8 +111,24 @@ class SearchClient {
      * @return this
      */
 	
-	public function addFilter($fieldName, array $values/*array(String)*/){
-		$this->filters[$fieldName] = $values;
+	public function addTextFilter($fieldName, array $values/*array(String)*/){
+		foreach ($values as $key => $value) {
+			$this->filters[$fieldName][]=$values[$key];
+		}
+
+		return $this;
+	}
+	
+	public function addRangeFilter($fieldName, array $values/*array(String)*/){
+		
+		foreach ($values as $key => $value) {
+			$this->rangefilters[$fieldName][]=$values[$key];
+		}
+		return $this;
+	}
+
+	public function addOtherparams($key , $value){
+		$this->otherparams[$key] = $value;
 		return $this;
 	}
 	
@@ -125,9 +150,10 @@ class SearchClient {
      * @param pageSize
      * @return this
      */
-	
-	
 	public function setPage($pageNo, $pageSize){
+		if($pageNo > 0){
+			$pageNo = $pageNo -1;
+		}
 		$this->pageNo = $pageNo;
 		$this->pageSize = $pageSize;
 		
@@ -140,6 +166,7 @@ class SearchClient {
 		}
 		
 		try{
+
 			$sb = "";
 			if(isset($this->query)){
 				$sb .= $this->getSearchUrl();
@@ -160,12 +187,49 @@ class SearchClient {
 			}
 			
 			if(isset($this->filters) && count($this->filters)>0){
+				
 				foreach ($this->filters as $key=>$val){
+					if((count($this->filters[$key])) > 1){
+						$flag = 0;
+						foreach ($val as $value) {
+							if($flag == 0){
+								$sb .= "&filter=".urlencode(utf8_encode($key.':"'.$value.'"'));
+								$flag = 1 ;
+					    	}
+							else{
+								$sb.=urlencode(utf8_decode(" OR ".$key.':"'.$value.'"'));
+								
+							}
+						}
+						
+					}
+					else{
+					
 					foreach($val as $value){
 						$sb .= "&filter=".urlencode(utf8_encode($key.':"'.$value.'"'));
+						
 					}
+				  }
 				}
 			}
+			
+			if(isset($this->rangefilters) && count($this->rangefilters)>0){
+					foreach ($this->rangefilters as $key => $value) {
+						$cnt = count($value)-1;
+						$sb .= "&filter=".$key;
+						for( $val=0 ; $val < count($value); $val+=1){
+							$sb.=":[".$value[$val].'+TO+'.$value[++$val].']';
+
+						if($val < $cnt)
+						{
+							$sb.= urlencode(utf8_decode(" OR ".$key));
+						}
+
+						}
+						}
+				
+			}
+
 			
 			if(isset($this->sorts) && count($this->sorts)>0){
 				$sorts = array();
@@ -175,8 +239,15 @@ class SearchClient {
 				$sb .= "&sort=".urlencode(utf8_encode(implode(",", $sorts)));
 			}
 			
+
 			$sb .= "&pageNumber=$this->pageNo";
 			$sb .= "&rows=$this->pageSize";
+			if(isset($this->otherparams) && count($this->otherparams)>0){
+				foreach ($this->otherparams as $key=>$val){
+					foreach($val as $value){
+						$sb .= "&".urlencode(utf8_encode($key.'='.$value));
+					}
+			}
 			return (string)$sb;
 			
 		}catch (Exception $e){
@@ -193,10 +264,12 @@ class SearchClient {
      */
 	
 	public function execute(){
+
 		try{
 			$errors=NULL;
 			$url = $this->generateUrl();
 			$request = curl_init($url);
+
 			curl_setopt($request, CURLOPT_RETURNTRANSFER, TRUE);
 			$response = curl_exec($request);
 			if(curl_errno($request)){
@@ -210,6 +283,7 @@ class SearchClient {
 			if($info['http_code']!=200){
 				throw  new SearchException($response);
 			}
+
 			return new SearchResponse(json_decode($response,TRUE));
 			
 		}catch(Exception $e){
