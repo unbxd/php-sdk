@@ -16,7 +16,7 @@ include_once (dirname(__FILE__).'/../src/feed/TaxonomyNode.php');
 class FeedClientTest extends PHPUnit_Framework_TestCase{
 	
 	protected function setUp(){
-		Unbxd::configure("sdk_test-u1404981344388", "149abee9a65f0d135cd07c90308c54d4", "149abee9a65f0d135cd07c90308c54d4");
+		Unbxd::configure("php_com-u1439281644351", "38e7b62452d04847a9716504d280990c", "38e7b62452d04847a9716504d280990c");
 	}
 	
 	public function test_product_upload(){

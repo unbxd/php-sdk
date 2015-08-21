@@ -18,8 +18,8 @@ class RecommendationsClientTest extends PHPUnit_Framework_TestCase{
 		$this->assertNotNull($response);
 		$this->assertEquals(200,$response->getStatusCode());	
 		$this->assertEquals("OK",$response->getMessage());
-		$this->assertEquals(8,$response->getTotalResultsCount());
-		$this->assertEquals(8,$response->getResults()->getResultsCount());
+		$this->assertEquals(15,$response->getTotalResultsCount());
+		$this->assertEquals(15,$response->getResults()->getResultsCount());
 		$this->assertNotNull($response->getResults()->getAt(0)->getUniqueId());
 	}
 }
