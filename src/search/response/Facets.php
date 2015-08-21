@@ -14,17 +14,14 @@ class Facets {
 	private $_facetsMap;//array(String => Facet)
 	
 	public function __construct(array $params/*array(String=>Object)*/){
-
 		$this->_facets = array();
 		$this->_facetsMap = array();
 		
-
 		foreach ($params as $field=>$value) {			
 			$facetParams = $value;
 			$type = $facetParams["type"];	
 			$facet = ($type=="facet_fields")?(new Facet($field, $facetParams)):(new RangeFacet($field, $facetParams));
-			array_push($this->_facets,$facet);
-		
+			array_push($this->_facets,$facet);		
 			$this->_facetsMap[$field]=$facet;
 		}		
 	}

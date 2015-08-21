@@ -9,17 +9,19 @@ require_once (dirname(__FILE__).'/Banner.php');
 class Banners {
 	private $_Banner;//array(Banner)
 	private $_categories;
-	
-	
+		
 	public function __construct(array $params/*array(String=>Object)*/){
 		$this->_Banner=array();
+		$this->_categories = array();
 		if(isset($params["banners"])){
 			foreach ($params["banners"] as $name => $value) {
 				$banner = new Banner($value);
 				array_push($this->_Banner,$banner);
 			}
 		}
-		$this->_categories = $params["categories"];
+		if(array_key_exists("categories" , $params)){
+			$this->_categories = $params["categories"];
+		}
 	}
 	
 	public function getBanner(){

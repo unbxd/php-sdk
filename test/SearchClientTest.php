@@ -26,7 +26,7 @@ class SearchClientTest extends PHPUnit_Framework_TestCase{
 		$response = $client->search("*",$queryParams)
 					->addTextFilter("category_fq",array("men"))
 					->addTextFilter("brand_fq",array("abercrombie"))
-					->addRangeFilter("price_fq",["1000","3000"])
+					->addRangeFilter("price_fq","1000","3000")
 					->addSort("price",new SortDir(SortDir::ASC))
 					->setPage(0,10)
 					->execute();
@@ -53,7 +53,7 @@ class SearchClientTest extends PHPUnit_Framework_TestCase{
 					->browse("1",$queryParams)
 					->addTextFilter("category_fq",array("men"))
 					->addTextFilter("brand_fq",array("abercrombie"))
-					->addRangeFilter("price_fq",["1000","3000"])
+					->addRangeFilter("price_fq","1000","3000")
 					->addSort("price",new SortDir(SortDir::ASC))
 					->setPage(0,10)
 					->execute();
@@ -80,7 +80,7 @@ class SearchClientTest extends PHPUnit_Framework_TestCase{
 					->bucket("*", "category", $queryParams)
 					->addTextFilter("category_fq",array("men"))
 					->addTextFilter("brand_fq",array("abercrombie"))
-					->addRangeFilter("price_fq",["1000","3000"])
+					->addRangeFilter("price_fq","1000","3000")
 					->addSort("price",new SortDir(SortDir::ASC))
 					->setPage(0,10)
 					->execute();

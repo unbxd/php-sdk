@@ -14,7 +14,13 @@ class AutoSuggestClientTest extends PHPUnit_Framework_TestCase{
 	public function test_autosuggest(){
 		Unbxd::configure("demosite-u1407617955968", "64a4a2592a648ac8415e13c561e44991", "64a4a2592a648ac8415e13c561e44991");
 		$client = Unbxd::getAutoSuggestClient();
-		$response = $client->autosuggest("sh")->setInFieldsCount(3)->setKeywordSuggestionsCount(5)->setPopularProductsCount(10)->setTopQueriesCount(4)->execute();$this->assertNotNull($response);
+		$response = $client->autosuggest("sh")
+						   ->setInFieldsCount(3)
+						   ->setKeywordSuggestionsCount(5)
+						   ->setPopularProductsCount(10)
+						   ->setTopQueriesCount(4)
+						   ->execute();
+		$this->assertNotNull($response);
 		$this->assertEquals(0,$response->getStatusCode());
 		$this->assertNotEquals(0,$response->getQueryTime());
 		$this->assertEquals(0,$response->getErrorCode());

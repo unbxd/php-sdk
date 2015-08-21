@@ -15,7 +15,6 @@ class Facet {
 	protected $_displayname;//string
 	protected $_position;//int
 
-
 	public function __construct($facetName/*String*/, array $params/*array(String => Object)*/ ){
 		$this->name = $facetName;
 		$this->_type = (string)$params["type"];

@@ -28,7 +28,6 @@ class SearchClient {
 	private $pageNo;//int
 	private $pageSize;//int
 	private $OtherParams;
-
 	
 	public function __construct($siteKey, $apiKey, $secure/*bool*/){
 		$this->siteKey = $siteKey;
@@ -58,11 +57,10 @@ class SearchClient {
      * @return this
      */
 	
-	public function search($query/*String*/, array $queryParams=NULL){
+	public function search($query/*String*/, array $queryParams=array()){
 
 		$this->query = $query;
-		$this->queryParams = $queryParams;
-		
+		$this->queryParams = $queryParams;		
 		return $this;
 	}
 	
@@ -74,7 +72,7 @@ class SearchClient {
      * @return this
      */
 	
-	public function bucket($query/*String*/, $bucketField/*String*/, array $queryParams=NULL){
+	public function bucket($query/*String*/, $bucketField/*String*/, array $queryParams=array()){
 		$this->query =  $query;
 		$this->queryParams = $queryParams;
 		$this->bucketField = $bucketField;
@@ -88,7 +86,7 @@ class SearchClient {
      * @return this
      */
 	
-	public function browse($nodeId, array $queryParams=NULL){
+	public function browse($nodeId, array $queryParams=array()){
 		if(is_array($nodeId)){
 			$this->categoryIds = $nodeId;
 		}
@@ -107,17 +105,13 @@ class SearchClient {
      * @return this
      */
 	
-	public function addTextFilter($fieldName, array $values/*array(String)*/){
-		foreach ($values as $field => $value) {
-			$this->filters[$fieldName][]=$values[$field];
-		}
+	public function addTextFilter($fieldName, $values/*array(String)*/){
+		$this->filters[$fieldName][]=$values;
 		return $this;
 	}
 	
-	public function addRangeFilter($fieldName, array $values/*array(String)*/){		
-		foreach ($values as $field => $value){
-			$this->rangefilters[$fieldName][]=$values[$field];
-		}
+	public function addRangeFilter($fieldName, $Start , $Stop){		
+		$this->rangefilters[$fieldName][]="[" . $Start . " TO " . $Stop ."]";
 		return $this;
 	}
 
@@ -164,8 +158,7 @@ class SearchClient {
 			$sb = "";
 			if(isset($this->query)){
 				$sb .= $this->getSearchUrl();
-				$sb .= "&q=".urlencode(utf8_encode($this->query));
-				
+				$sb .= "&q=".urlencode(utf8_encode($this->query));				
 				if(isset($this->bucketField)){
 					$sb .= "&bucket.field=".urlencode(utf8_encode($this->bucketField));
 				}
@@ -182,44 +175,15 @@ class SearchClient {
 			}
 			
 			if(isset($this->filters) && count($this->filters)>0){
-				
 				foreach ($this->filters as $key=>$val){
-					if((count($this->filters[$key])) > 1){
-						$flag = 0;
-						foreach ($val as $value) {
-							if($flag == 0){
-								$sb .= "&filter=".urlencode(utf8_encode($key.':"'.$value.'"'));
-								$flag = 1 ;
-					    	}
-							else{
-								$sb.=urlencode(utf8_decode(" OR ".$key.':"'.$value.'"'));
-								
-							}
-						}
-						
-					}
-					else{
-					
-						foreach($val as $value){
-							$sb .= "&filter=".urlencode(utf8_encode($key.':"'.$value.'"'));
-						
-						}
-				  	}
+					$sb.= "&filter=".urlencode($key.':"'.join(("\" OR " . $key .":\""), $val).'"');
 				}
 			}
 			
 			if(isset($this->rangefilters) && count($this->rangefilters)>0){
-				foreach ($this->rangefilters as $key => $value) {
-					$cnt = count($value)-1;
-					$sb .= "&filter=".$key;
-					for( $val=0 ; $val < count($value); $val+=1){
-						$sb.=":[".$value[$val].'+TO+'.$value[++$val].']';
-						if($val < $cnt){
-							$sb.= urlencode(utf8_decode(" OR ".$key));
-						}
-					}
+				foreach ($this->rangefilters as $key => $val){
+					$sb.= "&filter=".urlencode($key.':'.join((" OR " . $key .":"), $val));
 				}
-				
 		    }
 
 			if(isset($this->sorts) && count($this->sorts)>0){
@@ -260,9 +224,7 @@ class SearchClient {
 		try{
 			$errors=NULL;
 			$url = $this->generateUrl();
-			print_r($url);
 			$request = curl_init($url);
-
 			curl_setopt($request, CURLOPT_RETURNTRANSFER, TRUE);
 			$response = curl_exec($request);
 			if(curl_errno($request)){

@@ -64,6 +64,7 @@ class RecommendationsClient {
      * Get More products like product : uniqueId
      * @param uniqueId Unique Id of the product
      * @param uid value of the cookie : "unbxd.userId"
+     * @param ip IP address if the user for localization of results
      * @return this
      */
 	
@@ -80,6 +81,7 @@ class RecommendationsClient {
      * Get products which were also viewed by users who viewed the product : uniqueId
      * @param uniqueId Unique Id of the product
      * @param uid value of the cookie : "unbxd.userId"
+     * @param ip IP address if the user for localization of results
      * @return this
      */
 	
@@ -96,6 +98,7 @@ class RecommendationsClient {
      * Get products which were also bought by users who bought the product : uniqueId
      * @param uniqueId Unique Id of the product
      * @param uid value of the cookie : "unbxd.userId"
+     * @param ip IP address if the user for localization of results
      * @return this
      */
 	
@@ -109,6 +112,7 @@ class RecommendationsClient {
 	
 	 /**
      * Get Top Selling products
+     * @param uniqueId Unique Id of the product
      * @param uid value of the cookie : "unbxd.userId"
      * @param ip IP address if the user for localization of results
      * @return this
@@ -172,6 +176,7 @@ class RecommendationsClient {
 	
 	/**
      * Get recommendations based on the products added in cart by the user : uid
+     * @param uniqueId Unique Id of the product
      * @param uid value of the cookie : "unbxd.userId"
      * @param ip IP address if the user for localization of results
      * @return this
@@ -184,6 +189,13 @@ class RecommendationsClient {
 		return $this;
 	}
 	
+	/**
+     * Get recommendations based on the products added in cart by the user : uid
+     * @param uid value of the cookie : "unbxd.userId"
+     * @param ip IP address if the user for localization of results
+     * @return this
+     */
+
 	private function generateUrl(){
 		try{
 			$s="";

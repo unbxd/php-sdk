@@ -148,13 +148,25 @@ class SearchResponse {
 		return $this->_buckets;
 	}
 
+	/**
+     * @return Banners. Refer {@link Banners}
+     */
+
 	public function getBanners(){
 		return $this->_banner->getBanner();
 	}
 
+	/**
+     * @return Banners. Refer {@link Facets}
+     */
+
 	public function getFacets(){
 		return $this->_facets->getFacets();
 	}
+
+	/**
+     * @return Banners category.
+     */
 
 	public function getAppliedcategory(){
 		return $this->_banner->getAppliedcategory();
