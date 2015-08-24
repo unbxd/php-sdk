@@ -7,16 +7,16 @@
  */
 require_once (dirname(__FILE__).'/Banner.php');
 class Banners {
-	private $_Banner;//array(Banner)
+	private $_banner;//array(Banner)
 	private $_categories;
 		
 	public function __construct(array $params/*array(String=>Object)*/){
-		$this->_Banner=array();
+		$this->_banner=array();
 		$this->_categories = array();
 		if(isset($params["banners"])){
 			foreach ($params["banners"] as $name => $value) {
 				$banner = new Banner($value);
-				array_push($this->_Banner,$banner);
+				array_push($this->_banner,$banner);
 			}
 		}
 		if(array_key_exists("categories" , $params)){
@@ -25,7 +25,7 @@ class Banners {
 	}
 	
 	public function getBanner(){
-		return $this->_Banner;
+		return $this->_banner;
 	}
 	
 	public function getAppliedcategory(){

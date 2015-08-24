@@ -27,7 +27,7 @@ class Unbxd {
 	 * @param secretKey API key for calling Feed APIs
 	 */
 	
-	public static function configure($siteKey, $apiKey, $secretKey) {
+	public static function configure($siteKey, $apiKey, $secretKey=FALSE) {
 		self::$siteKey = $siteKey;
 		self::$apiKey = $apiKey;
 		self::$secretKey = $secretKey;

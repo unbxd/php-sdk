@@ -20,7 +20,7 @@ class RecommendationsClient {
 	private $category;//String
 	private $brand;//String
 	
-	public function __construct($siteKey/*string*/, $apiKey/*string*/, $secure/*bool*/){
+	public function __construct($siteKey/*string*/, $apiKey/*string*/, $secure=FALSE){
 		$this->siteKey = $siteKey;
 		$this->apiKey = $apiKey;
 		$this->secure = $secure;

@@ -29,7 +29,7 @@ class SearchClient {
 	private $pageSize;//int
 	private $OtherParams;
 	
-	public function __construct($siteKey, $apiKey, $secure/*bool*/){
+	public function __construct($siteKey, $apiKey, $secure=FALSE){
 		$this->siteKey = $siteKey;
 		$this->apiKey = $apiKey;
 		$this->secure = $secure;
@@ -105,8 +105,10 @@ class SearchClient {
      * @return this
      */
 	
-	public function addTextFilter($fieldName, $values/*array(String)*/){
-		$this->filters[$fieldName][]=$values;
+	public function addTextFilter($fieldName, array $values/*array(String)*/){
+		foreach ($values as $key => $value) {
+			$this->filters[$fieldName][]=$values[$key];
+		}
 		return $this;
 	}
 	
@@ -176,13 +178,13 @@ class SearchClient {
 			
 			if(isset($this->filters) && count($this->filters)>0){
 				foreach ($this->filters as $key=>$val){
-					$sb.= "&filter=".urlencode($key.':"'.join(("\" OR " . $key .":\""), $val).'"');
+					$sb.= "&filter=".urlencode(utf8_encode($key.':"'.join(("\" OR " . $key .":\""), $val).'"'));
 				}
 			}
 			
 			if(isset($this->rangefilters) && count($this->rangefilters)>0){
 				foreach ($this->rangefilters as $key => $val){
-					$sb.= "&filter=".urlencode($key.':'.join((" OR " . $key .":"), $val));
+					$sb.= "&filter=".urlencode(utf8_encode($key.':'.join((" OR " . $key .":"), $val)));
 				}
 		    }
 

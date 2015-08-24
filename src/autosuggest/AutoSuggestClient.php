@@ -21,7 +21,7 @@ class AutoSuggestClient{
 	private $keywordSuggestionsCount;//int
 	private $topQueriesCount;//int
 	
-	public function __construct($siteKey/*String*/, $apiKey/*String*/, $secure/*bool*/){
+	public function __construct($siteKey/*String*/, $apiKey/*String*/, $secure=FALSE){
 		
 		$this->apiKey = $apiKey;
 		$this->siteKey = $siteKey;
