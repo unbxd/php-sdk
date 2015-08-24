@@ -29,7 +29,7 @@ class SearchResults {
 	}
 	
 	public function getAt($i){
-		if($i > $this->_resultsCount){
+		if($i > $this->_resultsCount || $this->_resultsCount == 0){
 			return NULL;
 		}
 		return $this->_results[$i];

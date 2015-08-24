@@ -14,19 +14,22 @@ include_once (dirname(__FILE__).'/../src/search/response/SearchResponse.php');
 class SearchClientTest extends PHPUnit_Framework_TestCase{
 	
 	protected function setUp(){
-		Unbxd::configure("demo-u1393483043451", "ae30782589df23780a9d98502388555f", "ae30782589df23780a9d98502388555f");
+		Unbxd::configure("demosite-u1407617955968", "64a4a2592a648ac8415e13c561e44991", "64a4a2592a648ac8415e13c561e44991");
 	}
 	
 	public function test_search(){
+		
 		$queryParams = array();
 		$queryParams["fl"]="uniqueId";
 		$queryParams["stats"] = "price";
 		$client = Unbxd::getSearchClient();
 		$response = $client->search("*",$queryParams)
-					->addFilter("color_fq",array("black"))
-					->addFilter("brand_fq",array("Ralph Lauren"))
+					->addTextFilter("category_fq",array("men"))
+					->addTextFilter("brand_fq",array("abercrombie"))
+					->addRangeFilter("price_fq","1000","2000")
+					->addRangeFilter("price_fq","2000","3000")
 					->addSort("price",new SortDir(SortDir::ASC))
-					->setPage(2,5)
+					->setPage(0,10)
 					->execute();
 		$this->assertNotNull($response);
 		$this->assertEquals(0,$response->getStatusCode());
@@ -34,11 +37,13 @@ class SearchClientTest extends PHPUnit_Framework_TestCase{
 		$this->assertEquals(0,$response->getErrorCode());
 		$this->assertEquals("OK",$response->getMessage());
 		$this->assertNotEquals(0,$response->getTotalResultsCount());
-		$this->assertEquals(5,$response->getResults()->getResultsCount());
-		$this->assertEquals(1,count($response->getResults()->getAt(0)->getAttributes()));
+		$this->assertEquals(10,$response->getResults()->getResultsCount());
+		$this->assertNotEquals(0,count($response->getResults()->getAt(0)->getAttributes()));
 		$this->assertNotNull($response->getResults()->getAt(0)->getAttributes());
 		$this->assertNotNull($response->getStats());
 		$this->assertNotNull($response->getStats()->getStat("price")->getMin());
+		$this->assertGreaterThanOrEqual(1000,$response->getStats()->getStat("price")->getmin());
+		$this->assertLessThanOrEqual(3000,$response->getStats()->getStat("price")->getmax());
 	}
 	
 	public function test_browse(){
@@ -47,23 +52,26 @@ class SearchClientTest extends PHPUnit_Framework_TestCase{
 		$queryParams["stats"] = "price";
 		$response = Unbxd::getSearchClient()
 					->browse("1",$queryParams)
-					->addFilter("color_fq",array("black"))
-					->addFilter("brand_fq",array("Ralph Lauren"))
+					->addTextFilter("category_fq",array("men"))
+					->addTextFilter("brand_fq",array("abercrombie"))
+					->addRangeFilter("price_fq","1000","2000")
+					->addRangeFilter("price_fq","2000","3000")
 					->addSort("price",new SortDir(SortDir::ASC))
-					->setPage(2,5)
+					->setPage(0,10)
 					->execute();
 		$this->assertNotNull($response);
 		$this->assertEquals(0,$response->getStatusCode());
 		$this->assertNotEquals(0,$response->getQueryTime());
 		$this->assertEquals(0,$response->getErrorCode());
 		$this->assertEquals("OK",$response->getMessage());
-		$this->assertNotEquals(0,$response->getTotalResultsCount());
-		$this->assertEquals(5,$response->getResults()->getResultsCount());
+		$this->assertNotEquals(1,$response->getTotalResultsCount());
+		$this->assertEquals(10,$response->getResults()->getResultsCount());
 		$this->assertEquals(1,count($response->getResults()->getAt(0)->getAttributes()));
 		$this->assertNotNull($response->getResults()->getAt(0)->getAttributes());
 		$this->assertNotNull($response->getStats());
 		$this->assertNotNull($response->getStats()->getStat("price")->getMin());
-		
+		$this->assertGreaterThanOrEqual(1000,$response->getStats()->getStat("price")->getmin());
+		$this->assertLessThanOrEqual(3000,$response->getStats()->getStat("price")->getmax());
 	}
 	
 	public function test_bucket(){
@@ -72,19 +80,21 @@ class SearchClientTest extends PHPUnit_Framework_TestCase{
 		$queryParams["stats"] = "price";
 		$response = Unbxd::getSearchClient()
 					->bucket("*", "category", $queryParams)
-					->addFilter("color_fq",array("black"))
-					->addFilter("brand_fq",array("Ralph Lauren"))
+					->addTextFilter("category_fq",array("men"))
+					->addTextFilter("brand_fq",array("abercrombie"))
+					->addRangeFilter("price_fq","1000","2000")
+					->addRangeFilter("price_fq","2000","3000")
 					->addSort("price",new SortDir(SortDir::ASC))
-					->setPage(2,5)
+					->setPage(0,10)
 					->execute();
 		$this->assertNotNull($response);
 		$this->assertEquals(0,$response->getStatusCode());
 		$this->assertNotEquals(0,$response->getQueryTime());
 		$this->assertEquals(0,$response->getErrorCode());
 		$this->assertEquals("OK",$response->getMessage());
-		$this->assertNotEquals(0,$response->getTotalResultsCount());
+		$this->assertNotEquals(1,$response->getTotalResultsCount());
 		$this->assertNull($response->getResults());
-		$this->assertEquals(5,$response->getBuckets()->getNumberOfBuckets());
+		$this->assertEquals(1,$response->getBuckets()->getNumberOfBuckets());
 		$bucket = $response->getBuckets()->getBuckets();
 		$this->assertNotEquals(0,$bucket[0]->getTotalResultsCount());
 		$this->assertEquals(1,count($bucket[0]->getResults()->getAt(0)->getAttributes()));
@@ -92,6 +102,8 @@ class SearchClientTest extends PHPUnit_Framework_TestCase{
 		$this->assertNotNull($attr["uniqueId"]);
 		$this->assertNotNull($response->getStats());
 		$this->assertNotNull($response->getStats()->getStat("price")->getMin());
+		$this->assertGreaterThanOrEqual(1000,$response->getStats()->getStat("price")->getmin());
+		$this->assertLessThanOrEqual(3000,$response->getStats()->getStat("price")->getmax());
 	}
 	
 }

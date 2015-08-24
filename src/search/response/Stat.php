@@ -17,7 +17,7 @@ class Stat {
 	public function __construct(array $params/*array(String=>Object)*/){
 		$this->_min = (double) $params["min"];
 		$this->_max = (double) $params["max"];
-		$this->_count = (int) $params["counts"];
+		$this->_count = (int) $params["count"];
 		$this->_sum = (double) $params["sum"];
 		$this->_mean = (double) $params["mean"];
 	}
@@ -30,6 +30,10 @@ class Stat {
 		return $this->_min;
 	}	
 	
+	public function getMax(){
+		return $this->_max;
+	}
+
 	public function getSum(){
 		return $this->_sum;
 	}

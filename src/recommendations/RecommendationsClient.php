@@ -20,15 +20,15 @@ class RecommendationsClient {
 	private $category;//String
 	private $brand;//String
 	
-	public function __construct($siteKey/*string*/, $apiKey/*string*/, $secure/*bool*/){
+	public function __construct($siteKey/*string*/, $apiKey/*string*/, $secure=FALSE){
 		$this->siteKey = $siteKey;
 		$this->apiKey = $apiKey;
 		$this->secure = $secure;
 		
 	}
-	
+
 	private function getRecommendationUrl(){
-		return (($this->secure)?"https://":"http://")."apac-recommendations.unbxdapi.com/v1.0/$this->apiKey/$this->siteKey/";
+		return (($this->secure)?"https://":"http://")."recommendations.unbxdapi.com/v1.0/".$this->apiKey."/".$this->siteKey."/";
 	}
 	
 	
@@ -38,9 +38,10 @@ class RecommendationsClient {
      * @return this
      */
 	
-	public function getRecentlyViewed($uid/*String*/){
+	public function getRecentlyViewed($uid/*String*/ , $ip/*String*/){
 		$this->_boxType = new RecommenderBoxType(RecommenderBoxType::RECENTLY_VIEWED);
 		$this->uid = $uid;
+		$this->ip  = $ip;
 		return $this;
 	}
 	
@@ -63,13 +64,15 @@ class RecommendationsClient {
      * Get More products like product : uniqueId
      * @param uniqueId Unique Id of the product
      * @param uid value of the cookie : "unbxd.userId"
+     * @param ip IP address if the user for localization of results
      * @return this
      */
 	
-	public function getMoreLikeThis($uniqueId/*String*/, $uid/*String*/){
+	public function getMoreLikeThis($uniqueId/*String*/, $uid/*String*/,$ip/*String*/){
 		$this->_boxType = new RecommenderBoxType(RecommenderBoxType::MORE_LIKE_THESE);
 		$this->uid = $uid;
 		$this->uniqueId = $uniqueId;
+		$this->ip  = $ip;
 		return $this;
 	}
 	
@@ -78,13 +81,15 @@ class RecommendationsClient {
      * Get products which were also viewed by users who viewed the product : uniqueId
      * @param uniqueId Unique Id of the product
      * @param uid value of the cookie : "unbxd.userId"
+     * @param ip IP address if the user for localization of results
      * @return this
      */
 	
-	public function getAlsoViewed($uniqueId/*String*/, $uid/*String*/){
+	public function getAlsoViewed($uniqueId/*String*/, $uid/*String*/,$ip/*String*/){
 		$this->_boxType = new RecommenderBoxType(RecommenderBoxType::ALSO_VIEWED);
 		$this->uid = $uid;
 		$this->uniqueId = $uniqueId;
+		$this->ip  = $ip;
 		return $this;
 	}
 	
@@ -93,18 +98,21 @@ class RecommendationsClient {
      * Get products which were also bought by users who bought the product : uniqueId
      * @param uniqueId Unique Id of the product
      * @param uid value of the cookie : "unbxd.userId"
+     * @param ip IP address if the user for localization of results
      * @return this
      */
 	
-	public function getAlsoBought($uniqueId/*String*/, $uid/*String*/){
+	public function getAlsoBought($uniqueId/*String*/, $uid/*String*/,$ip/*String*/){
 		$this->_boxType = new RecommenderBoxType(RecommenderBoxType::ALSO_BOUGHT);
 		$this->uid = $uid;
 		$this->uniqueId = $uniqueId;
+		$this->ip  = $ip;
 		return $this;
 	}
 	
 	 /**
      * Get Top Selling products
+     * @param uniqueId Unique Id of the product
      * @param uid value of the cookie : "unbxd.userId"
      * @param ip IP address if the user for localization of results
      * @return this
@@ -168,6 +176,7 @@ class RecommendationsClient {
 	
 	/**
      * Get recommendations based on the products added in cart by the user : uid
+     * @param uniqueId Unique Id of the product
      * @param uid value of the cookie : "unbxd.userId"
      * @param ip IP address if the user for localization of results
      * @return this
@@ -180,6 +189,13 @@ class RecommendationsClient {
 		return $this;
 	}
 	
+	/**
+     * Get recommendations based on the products added in cart by the user : uid
+     * @param uid value of the cookie : "unbxd.userId"
+     * @param ip IP address if the user for localization of results
+     * @return this
+     */
+
 	private function generateUrl(){
 		try{
 			$s="";
@@ -251,14 +267,12 @@ class RecommendationsClient {
 			if($info['http_code']!=200){
 				throw  new RecommendationsException($response);
 			}
-			
 			return new RecommendationResponse(json_decode($response,TRUE));
 			
 		}catch (Exception $e){
 			throw new RecommendationsException($e->getMessage());
 		}
-	}
-	
+	}	
 	
 }
 

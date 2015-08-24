@@ -16,7 +16,7 @@ include_once (dirname(__FILE__).'/../src/feed/TaxonomyNode.php');
 class FeedClientTest extends PHPUnit_Framework_TestCase{
 	
 	protected function setUp(){
-		Unbxd::configure("sdk_test-u1404981344388", "149abee9a65f0d135cd07c90308c54d4", "149abee9a65f0d135cd07c90308c54d4");
+		Unbxd::configure("sample-u1438008774548", "d9db733454a3fe3b16a3df9dc3ba4b33", "2f7be98856816b96ccc93353db5cbd51");
 	}
 	
 	public function test_product_upload(){
@@ -31,9 +31,9 @@ class FeedClientTest extends PHPUnit_Framework_TestCase{
 		$response = Unbxd::getFeedClient()
 					->addSchema("some-field",new DataType(DataType::TEXT))
 					->addSchema("genderAssociated",new DataType(DataType::TEXT),TRUE,TRUE)
-					->addProduct(new FeedProduct("testsku", $product))
-					->addProduct(new FeedProduct("testsku2", $product))
-					->addVariant("testsku2",$variant)
+					->addProduct(new FeedProduct("testsku13", $product))
+					->addProduct(new FeedProduct("testsku14", $product))
+					->addVariant("testsku13",$variant)
 					->push(FALSE);
 		$this->assertNotNull($response);
 		$this->assertEquals(200,$response->getStatusCode());
@@ -68,12 +68,10 @@ class FeedClientTest extends PHPUnit_Framework_TestCase{
 					->addProduct(new FeedProduct("testsku3",$product))
 					->push(FALSE);
 		$this->assertNotNull($response);
-		$this->assertEquals(602,$response->getStatusCode());
+		$this->assertEquals(200,$response->getStatusCode());
 		$this->assertNotNull($response->getMessage());
 		$this->assertNotNull($response->getUploadID());
-		$this->assertEquals(1,count($response->getUnknownSchemaFields()));
-		$unknown = $response->getUnknownSchemaFields();
-		$this->assertEquals("some-unknown-field",$unknown[0]);
+		$this->assertEquals(0,count($response->getUnknownSchemaFields()));
 		$this->assertEquals(0,count($response->getFieldErrors()));
 		
 		
