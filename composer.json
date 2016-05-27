@@ -1,0 +1,7 @@
+{
+    "name": "unbxd/php-sdk",
+    "description": "UNBXD PHP SDK package",
+    "type": "library",
+    "license": "MIT",
+    "require": {}
+}
